@@ -1,7 +1,5 @@
-streamlit
-torch
-numpy
-pickle
-matplotlib
-pandas
-import
+streamlit==1.38.0
+torch==2.0.0
+numpy==1.24.2
+matplotlib==3.7.0
+pandas==1.5.3
