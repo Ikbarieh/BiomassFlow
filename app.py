@@ -43,18 +43,34 @@ model.eval()
 with open('scalers.pkl', 'rb') as f:
     scaler_data = pickle.load(f)
 
+# Load scalers
+with open('scalers.pkl', 'rb') as f:
+    scaler_data = pickle.load(f)
+
 # Streamlit interface
 def main():
     st.title("Machine Learning-based Hopper Design for Flowing Woody Biomass")
 
+    # Display the image
+    st.image("App_ML.png", width=500)
+
     # Inputs
     #ps = st.number_input("Enter d_50 in mm:", format="%.2f")
-    ps = st.number_input("Enter mean particle size d50 in mm:")
-    mc = st.number_input("Enter wetbased moiture content MC% in fractions:")
-    rd = st.number_input("Enter realtive density Dr using numeric values:")
-    wf = st.number_input("Enter wall friction coefficient Mu_w in fractions:")
-    ia = st.number_input("Enter hopper inclination angle Theta in degrees:")
-    w = st.number_input("Enter W in mm:")
+    st.markdown("### Enter mean particle size d<sub>50</sub> in mm:", unsafe_allow_html=True)
+    ps = st.number_input("ps", key="ps", label_visibility="collapsed", value=2.00)
+    st.markdown("### Enter wetbased moisture content MC% in percentage:")
+    mc = st.number_input("mc", key="mc", label_visibility="collapsed", value=20.00)
+    st.markdown("### Enter relative density D<sub>r</sub> using numeric values:", unsafe_allow_html=True)
+    st.markdown("##### D<sub>r</sub>= 0: very loose; D<sub>r</sub>= 1: loose; D<sub>r</sub>= 2: Dense", unsafe_allow_html=True)
+    rd = st.selectbox("rd", [0, 1, 2], key="dr", label_visibility="collapsed", index=1)
+    st.markdown("### Enter wall friction coefficient &mu;<sub>w</sub> in fractions:", unsafe_allow_html=True)
+    wf = st.number_input("wf", key="wf", label_visibility="collapsed", value=0.250)
+    st.markdown("### Enter hopper inclination angle &Theta; in degrees:", unsafe_allow_html=True)
+    ia = st.number_input("ia", key="ia", label_visibility="collapsed", value=30.00)
+    st.markdown("### Enter hopper opening width W in mm:")
+    w = st.number_input("w", key="w", label_visibility="collapsed", value=75.00)
+    st.markdown("### Enter hopper out-of-domain dimension in m:")
+    L = st.number_input("L", key="L", label_visibility="collapsed", value=1.000)
 
     # Button to make predictions
     if st.button('Predict'):
@@ -64,7 +80,7 @@ def main():
         # Apply scaling only to the inputs that require it
         scaled_inputs = np.array([
             (ps - scaler_data['scaler_X_mean'][0]) / scaler_data['scaler_X_scale'][0],  # Scaling ps
-            (mc - scaler_data['scaler_X_mean'][1]) / scaler_data['scaler_X_scale'][1],  # Scaling mc
+            (mc/100 - scaler_data['scaler_X_mean'][1]) / scaler_data['scaler_X_scale'][1],  # Scaling mc
             rd,  # No scaling for rd
             (wf - scaler_data['scaler_X_mean'][2]) / scaler_data['scaler_X_scale'][2],  # Scaling wf
             (ia - scaler_data['scaler_X_mean'][3]) / scaler_data['scaler_X_scale'][3],  # Scaling ia
@@ -78,13 +94,13 @@ def main():
         pred_output = model(e)
 
         # Process and display the output
-        output_preprocessing(pred_output)
+        output_preprocessing(pred_output, L)
 
 
 
-def output_preprocessing(pred_output):
+def output_preprocessing(pred_output, L):
     # Output scaling
-    MFR = pred_output[0,0]*(scaler_data['scaler_y_max'][0] - scaler_data['scaler_y_min'][0]) + scaler_data['scaler_y_min'][0]
+    MFR = (pred_output[0,0]*(scaler_data['scaler_y_max'][0] - scaler_data['scaler_y_min'][0]) + scaler_data['scaler_y_min'][0])/0.4*L
     Is = pred_output[0,1]*(scaler_data['scaler_y_max'][1] - scaler_data['scaler_y_min'][1]) + scaler_data['scaler_y_min'][1]
     C1 = pred_output[0,2].item()*(scaler_data['scaler_y_max'][2] - scaler_data['scaler_y_min'][2]) + scaler_data['scaler_y_min'][2]
     C2 = pred_output[0,3].item()*(scaler_data['scaler_y_max'][3] - scaler_data['scaler_y_min'][3]) + scaler_data['scaler_y_min'][3]
