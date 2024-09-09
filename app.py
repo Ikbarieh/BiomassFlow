@@ -100,7 +100,7 @@ def main():
 
 def output_preprocessing(pred_output, L):
     # Output scaling
-    MFR = (pred_output[0,0]*(scaler_data['scaler_y_max'][0] - scaler_data['scaler_y_min'][0]) + scaler_data['scaler_y_min'][0])/0.4*L
+    MFR = (pred_output[0,0]*(scaler_data['scaler_y_max'][0] - scaler_data['scaler_y_min'][0]) + scaler_data['scaler_y_min'][0])*L
     Is = pred_output[0,1]*(scaler_data['scaler_y_max'][1] - scaler_data['scaler_y_min'][1]) + scaler_data['scaler_y_min'][1]
     C1 = pred_output[0,2].item()*(scaler_data['scaler_y_max'][2] - scaler_data['scaler_y_min'][2]) + scaler_data['scaler_y_min'][2]
     C2 = pred_output[0,3].item()*(scaler_data['scaler_y_max'][3] - scaler_data['scaler_y_min'][3]) + scaler_data['scaler_y_min'][3]
