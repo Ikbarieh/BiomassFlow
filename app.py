@@ -69,7 +69,7 @@ def main():
     ia = st.number_input("ia", key="ia", label_visibility="collapsed", value=30.00)
     st.markdown("### Enter hopper opening width W in mm:")
     w = st.number_input("w", key="w", label_visibility="collapsed", value=75.00)
-    st.markdown("### Enter hopper out-of-domain dimension in m:")
+    st.markdown("### Enter hopper out-of-domain dimension L in m:")
     L = st.number_input("L", key="L", label_visibility="collapsed", value=1.000, format="%.3f")
 
     # Button to make predictions
