@@ -120,7 +120,7 @@ def output_preprocessing(pred_output, L):
     ax.set_title("Flow Pattern")
     ax.set_xlabel("Normalized x [-]")
     ax.set_ylabel("Normalized Velocity [-]")
-    ax.set_ylim(0, 1.0)
+    ax.set_ylim(0, 1.3)
     ax.grid(True)
     st.pyplot(fig)
 
